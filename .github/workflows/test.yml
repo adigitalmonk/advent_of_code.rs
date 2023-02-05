@@ -45,4 +45,4 @@ jobs:
         with:
           command: clippy
           args: |
-            -- -D clippy::pedantic -D clippy::unwrap_used -A clippy::unused_async
+            -- -Dwarnings -D clippy::pedantic -D clippy::unwrap_used -A clippy::unused_async
