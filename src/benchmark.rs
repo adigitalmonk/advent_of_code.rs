@@ -1,5 +1,9 @@
 use std::time::{Duration, SystemTime};
 
+pub mod prelude {
+    pub use super::Benchmark;
+}
+
 pub struct Benchmark {
     pub average: Duration,
     pub fastest: Duration,
