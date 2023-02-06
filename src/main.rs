@@ -1,5 +1,3 @@
-use crate::solutions::run_day3;
-
 mod benchmark;
 mod loader;
 mod solutions;
@@ -32,7 +30,7 @@ fn main() {
         d2p2, bm_p2.fastest, bm_p2.slowest, bm_p2.average
     );
 
-    let (d3p1, d3p2, bm_p1, bm_p2) = run_day3();
+    let (d3p1, d3p2, bm_p1, bm_p2) = solutions::run_day3();
     println!(
         "Day 3 Part 1 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
         d3p1, bm_p1.fastest, bm_p1.slowest, bm_p1.average
@@ -40,5 +38,15 @@ fn main() {
     println!(
         "Day 3 Part 2 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
         d3p2, bm_p2.fastest, bm_p2.slowest, bm_p2.average
+    );
+
+    let (d4p1, d4p2, bm_p1, bm_p2) = solutions::run_day4();
+    println!(
+        "Day 4 Part 1 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
+        d4p1, bm_p1.fastest, bm_p1.slowest, bm_p1.average
+    );
+    println!(
+        "Day 4 Part 2 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
+        d4p2, bm_p2.fastest, bm_p2.slowest, bm_p2.average
     );
 }
