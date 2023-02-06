@@ -49,4 +49,14 @@ fn main() {
         "Day 4 Part 2 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
         d4p2, bm_p2.fastest, bm_p2.slowest, bm_p2.average
     );
+
+    let (d5p1, d5p2, bm_p1, bm_p2) = solutions::run_day5();
+    println!(
+        "Day 4 Part 1 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
+        d5p1, bm_p1.fastest, bm_p1.slowest, bm_p1.average
+    );
+    println!(
+        "Day 4 Part 2 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
+        d5p2, bm_p2.fastest, bm_p2.slowest, bm_p2.average
+    );
 }

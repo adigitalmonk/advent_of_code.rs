@@ -2,6 +2,7 @@ mod day1;
 mod day2;
 mod day3;
 mod day4;
+mod day5;
 
 use crate::prelude::*;
 const ITERATIONS: u32 = 100;
@@ -88,4 +89,26 @@ pub fn run_day4() -> (u32, u32, Benchmark, Benchmark) {
     );
 
     (p1_result, p2_result, bm_p1, bm_p2)
+}
+
+pub fn run_day5() -> (String, String, Benchmark, Benchmark) {
+    let data = read_data("day5/full.txt");
+
+    let part1_result = day5::part1(&data);
+    let part2_result = day5::part2(&data);
+
+    let bm_p1 = Benchmark::run(
+        &|| {
+            day5::part1(&data);
+        },
+        ITERATIONS,
+    );
+    let bm_p2 = Benchmark::run(
+        &|| {
+            day5::part2(&data);
+        },
+        ITERATIONS,
+    );
+
+    (part1_result, part2_result, bm_p1, bm_p2)
 }
