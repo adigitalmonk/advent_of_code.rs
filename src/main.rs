@@ -1,72 +1,38 @@
-mod benchmark;
+use std::{fmt::Debug, time::Duration};
+
 mod loader;
 mod solutions;
 
 mod prelude {
-    pub use crate::benchmark::prelude::*;
     pub use crate::loader::*;
 }
 
+fn friendly(day: usize, part: usize, solution: &impl Debug, duration: Duration) {
+    println!("Day {day} Part {part} :: Solution {solution:?} :: Duration {duration:?}");
+}
+
 fn main() {
-    let (d1p1, d1p2, bm_p1, bm_p2) = solutions::run_day1();
+    let (p1, p2, p1d, p2d) = solutions::run_day1();
+    friendly(1, 1, &p1, p1d);
+    friendly(1, 2, &p2, p2d);
 
-    println!(
-        "Day 1 Part 1 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
-        d1p1, bm_p1.fastest, bm_p1.slowest, bm_p1.average
-    );
-    println!(
-        "Day 1 Part 2 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
-        d1p2, bm_p2.fastest, bm_p2.slowest, bm_p2.average
-    );
+    let (p1, p2, p1d, p2d) = solutions::run_day2();
+    friendly(2, 1, &p1, p1d);
+    friendly(2, 2, &p2, p2d);
 
-    let (d2p1, d2p2, bm_p1, bm_p2) = solutions::run_day2();
+    let (p1, p2, p1d, p2d) = solutions::run_day3();
+    friendly(3, 1, &p1, p1d);
+    friendly(3, 2, &p2, p2d);
 
-    println!(
-        "Day 2 Part 1 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
-        d2p1, bm_p1.fastest, bm_p1.slowest, bm_p1.average
-    );
-    println!(
-        "Day 2 Part 2 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
-        d2p2, bm_p2.fastest, bm_p2.slowest, bm_p2.average
-    );
+    let (p1, p2, p1d, p2d) = solutions::run_day4();
+    friendly(4, 1, &p1, p1d);
+    friendly(4, 2, &p2, p2d);
 
-    let (d3p1, d3p2, bm_p1, bm_p2) = solutions::run_day3();
-    println!(
-        "Day 3 Part 1 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
-        d3p1, bm_p1.fastest, bm_p1.slowest, bm_p1.average
-    );
-    println!(
-        "Day 3 Part 2 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
-        d3p2, bm_p2.fastest, bm_p2.slowest, bm_p2.average
-    );
+    let (p1, p2, p1d, p2d) = solutions::run_day5();
+    friendly(5, 1, &p1, p1d);
+    friendly(5, 2, &p2, p2d);
 
-    let (d4p1, d4p2, bm_p1, bm_p2) = solutions::run_day4();
-    println!(
-        "Day 4 Part 1 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
-        d4p1, bm_p1.fastest, bm_p1.slowest, bm_p1.average
-    );
-    println!(
-        "Day 4 Part 2 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
-        d4p2, bm_p2.fastest, bm_p2.slowest, bm_p2.average
-    );
-
-    let (d5p1, d5p2, bm_p1, bm_p2) = solutions::run_day5();
-    println!(
-        "Day 5 Part 1 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
-        d5p1, bm_p1.fastest, bm_p1.slowest, bm_p1.average
-    );
-    println!(
-        "Day 5 Part 2 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
-        d5p2, bm_p2.fastest, bm_p2.slowest, bm_p2.average
-    );
-
-    let (p1, p2, bm_p1, bm_p2) = solutions::run_day6();
-    println!(
-        "Day 6 Part 1 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
-        p1, bm_p1.fastest, bm_p1.slowest, bm_p1.average
-    );
-    println!(
-        "Day 6 Part 2 :: Solution: {} :: Fastest {:?} :: Slowest: {:?} :: Average: {:?}",
-        p2, bm_p2.fastest, bm_p2.slowest, bm_p2.average
-    );
+    let (p1, p2, p1d, p2d) = solutions::run_day6();
+    friendly(6, 1, &p1, p1d);
+    friendly(6, 2, &p2, p2d);
 }

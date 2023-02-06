@@ -195,30 +195,30 @@ pub fn part2(full_data: &[String]) -> String {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use super::*;
     use crate::prelude::*;
 
     #[test]
-    fn test_day5_part1_sample() {
+    fn test_part1_sample() {
         let sample_data = read_data("day5/sample.txt");
         assert_eq!(part1(&sample_data), "CMZ");
     }
 
     #[test]
-    fn test_day5_part1() {
+    fn test_part1() {
         let data = read_data("day5/full.txt");
         assert_eq!(part1(&data), "QGTHFZBHV");
     }
 
     #[test]
-    fn test_day5_part2_sample() {
+    fn test_part2_sample() {
         let sample_data = read_data("day5/sample.txt");
         assert_eq!(part2(&sample_data), "MCD");
     }
 
     #[test]
-    fn test_day5_part2() {
+    fn test_part2() {
         let data = read_data("day5/full.txt");
         assert_eq!(part2(&data), "MGDMPSZTM");
     }

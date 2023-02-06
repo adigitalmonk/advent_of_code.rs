@@ -16,8 +16,6 @@ fn find_start_of_signal(input: &str, distinction: usize) -> usize {
             if is_distinct(chunk) {
                 return i + distinction;
             }
-        } else {
-            return 0;
         }
     }
     0
@@ -32,7 +30,7 @@ pub fn part2(raw: &str) -> usize {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use super::*;
     use crate::prelude::*;
 
@@ -43,25 +41,27 @@ mod test {
     }
 
     #[test]
-    fn test_day6_part1_samples() {
-        assert_eq!(part1(&String::from("mjqjpqmgbljsphdztnvjfqwrcgsmlb")), 7);
-        assert_eq!(part1(&String::from("bvwbjplbgvbhsrlpgdmjqwftvncz")), 5);
-        assert_eq!(part1(&String::from("nppdvjthqldpwncqszvftbrmjlhg")), 6);
-        assert_eq!(
-            part1(&String::from("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg")),
-            10
-        );
-        assert_eq!(part1(&String::from("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw")), 11);
+    fn test_part1_samples() {
+        let test_data = [
+            ("mjqjpqmgbljsphdztnvjfqwrcgsmlb", 7),
+            ("bvwbjplbgvbhsrlpgdmjqwftvncz", 5),
+            ("nppdvjthqldpwncqszvftbrmjlhg", 6),
+            ("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg", 10),
+            ("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw", 11),
+        ];
+        for (test_string, expected) in test_data {
+            assert_eq!(part1(&String::from(test_string)), expected);
+        }
     }
 
     #[test]
-    fn test_day6_part1() {
+    fn test_part1() {
         let data = read_all_data("day6/full.txt");
         assert_eq!(part1(&data), 1912);
     }
 
     #[test]
-    fn test_day6_part2() {
+    fn test_part2() {
         let data = read_all_data("day6/full.txt");
         assert_eq!(part2(&data), 2122);
     }

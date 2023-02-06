@@ -82,7 +82,7 @@ pub fn part2(data: &[String]) -> u32 {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use super::*;
     use crate::prelude::*;
 

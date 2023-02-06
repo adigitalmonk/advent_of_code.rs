@@ -78,52 +78,56 @@ pub fn part2(data: &[String]) -> u32 {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use super::*;
     use crate::prelude::*;
 
     #[test]
     fn test_full_overlap() {
-        assert!(Assignment::new(0..5, 1..2).full_overlap());
-        assert!(Assignment::new(0..5, 2..5).full_overlap());
-        assert!(Assignment::new(0..5, 0..3).full_overlap());
-        assert!(Assignment::new(3..4, 2..5).full_overlap());
+        let overlap_data = [(0..5, 1..2), (0..5, 2..5), (0..5, 0..3), (3..4, 2..5)];
+        for (left, right) in overlap_data {
+            assert!(Assignment::new(left, right).full_overlap());
+        }
 
-        assert!(!Assignment::new(1..6, 3..7).full_overlap());
-        assert!(!Assignment::new(2..7, 0..6).full_overlap());
+        let no_overlap_data = [(1..6, 3..7), (2..7, 0..6)];
+        for (left, right) in no_overlap_data {
+            assert!(!Assignment::new(left, right).full_overlap());
+        }
     }
 
     #[test]
     fn test_any_overlap() {
-        assert!(Assignment::new(0..5, 4..6).any_overlap());
-        assert!(Assignment::new(0..5, 2..3).any_overlap());
-        assert!(Assignment::new(1..5, 0..1).any_overlap());
-        assert!(Assignment::new(3..4, 2..5).any_overlap());
+        let overlap_data = [(0..5, 4..6), (0..5, 2..3), (1..5, 0..1), (3..4, 2..5)];
+        for (left, right) in overlap_data {
+            assert!(Assignment::new(left, right).any_overlap());
+        }
 
-        assert!(!Assignment::new(1..4, 5..7).any_overlap());
-        assert!(!Assignment::new(2..7, 8..10).any_overlap());
+        let no_overlap_data = [(1..4, 5..7), (2..7, 8..10)];
+        for (left, right) in no_overlap_data {
+            assert!(!Assignment::new(left, right).any_overlap());
+        }
     }
 
     #[test]
-    fn test_day4_part1_sample() {
+    fn test_part1_sample() {
         let sample_data = read_data("day4/sample.txt");
         assert_eq!(part1(&sample_data), 2);
     }
 
     #[test]
-    fn test_day4_part1() {
+    fn test_part1() {
         let data = read_data("day4/full.txt");
         assert_eq!(part1(&data), 477);
     }
 
     #[test]
-    fn test_day4_part2_sample() {
+    fn test_part2_sample() {
         let data = read_data("day4/sample.txt");
         assert_eq!(part2(&data), 4);
     }
 
     #[test]
-    fn test_day4_part2() {
+    fn test_part2() {
         let data = read_data("day4/full.txt");
         assert_eq!(part2(&data), 830);
     }
