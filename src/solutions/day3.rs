@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::{collections::HashSet, str::FromStr};
 
 struct Rucksack {
     everything: HashSet<char>,
@@ -12,7 +12,7 @@ trait Prioritizable {
 
 impl Prioritizable for char {
     fn priority(self) -> u32 {
-        let value = self as u32;
+        let value: u32 = self.try_into().unwrap();
         if (97..=122).contains(&value) {
             value - 96
         } else if (65..=90).contains(&value) {
@@ -23,18 +23,22 @@ impl Prioritizable for char {
     }
 }
 
-impl Rucksack {
-    fn new(raw: &String) -> Self {
+impl FromStr for Rucksack {
+    type Err = String;
+
+    fn from_str(raw: &str) -> Result<Self, Self::Err> {
         let pack_length = raw.len();
         let (left_raw, right_raw) = raw.split_at(pack_length / 2);
 
-        Self {
+        Ok(Self {
             everything: raw.chars().collect(),
             left_pocket: left_raw.chars().collect(),
             right_pocket: right_raw.chars().collect(),
-        }
+        })
     }
+}
 
+impl Rucksack {
     fn get_badge_priority(&self) -> u32 {
         let badge = self
             .left_pocket
@@ -58,7 +62,9 @@ impl Rucksack {
 }
 
 fn build_packs(data: &[String]) -> Vec<Rucksack> {
-    data.iter().map(Rucksack::new).collect()
+    data.iter()
+        .map(|raw| Rucksack::from_str(raw.as_str()).unwrap())
+        .collect()
 }
 
 pub fn part1(data: &[String]) -> u32 {
