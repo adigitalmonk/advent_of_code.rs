@@ -6,7 +6,7 @@ struct Assignment {
 }
 
 impl Assignment {
-    fn new(first: Range<u32>, second: Range<u32>) -> Self {
+    const fn new(first: Range<u32>, second: Range<u32>) -> Self {
         Self { first, second }
     }
     fn full_overlap(&self) -> bool {
@@ -29,6 +29,7 @@ impl CheckOverlap for Range<u32> {
             || (other.start <= self.start && other.end >= self.end)
     }
 
+    #[allow(clippy::suspicious_operation_groupings)]
     fn has_overlap(&self, other: &Range<u32>) -> bool {
         self.start >= other.start && self.start <= other.end
             || self.end >= other.start && self.end <= other.end
@@ -38,43 +39,43 @@ impl CheckOverlap for Range<u32> {
 }
 
 fn build_assignments(data: &[String]) -> Vec<Assignment> {
-    data.iter().fold(Vec::new(), |mut acc, item| {
-        let thing: Vec<u32> = item
-            .split(&['-', ','])
-            .map(|x| x.parse::<u32>().expect("invalid input"))
-            .collect();
-
-        let first = thing.first().expect("missing data!");
-        let second = thing.get(1).expect("missing data!");
-        let third = thing.get(2).expect("missing data!");
-        let fourth = thing.get(3).expect("missing data!");
-        let assignment = Assignment::new(*first..*second, *third..*fourth);
-        acc.push(assignment);
-
-        acc
-    })
+    data.iter()
+        .map(|item| {
+            item.split(&['-', ','])
+                .map(|x| x.parse::<u32>().expect("invalid input"))
+        })
+        .map(|mut components| {
+            if let (Some(first), Some(second), Some(third), Some(fourth), None) = (
+                components.next(),
+                components.next(),
+                components.next(),
+                components.next(),
+                components.next(),
+            ) {
+                Assignment::new(first..second, third..fourth)
+            } else {
+                panic!("Bad input!")
+            }
+        })
+        .collect()
 }
 
 pub fn part1(data: &[String]) -> u32 {
     build_assignments(data)
         .iter()
-        .fold(0, |mut acc, assignment| {
-            if assignment.full_overlap() {
-                acc += 1;
-            }
-            acc
-        })
+        .filter(|assignment| assignment.full_overlap())
+        .count()
+        .try_into()
+        .unwrap()
 }
 
 pub fn part2(data: &[String]) -> u32 {
     build_assignments(data)
         .iter()
-        .fold(0, |mut acc, assignment| {
-            if assignment.any_overlap() {
-                acc += 1;
-            }
-            acc
-        })
+        .filter(|assignment| assignment.any_overlap())
+        .count()
+        .try_into()
+        .unwrap()
 }
 
 #[cfg(test)]

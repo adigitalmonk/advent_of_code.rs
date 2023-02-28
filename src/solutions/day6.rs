@@ -1,11 +1,7 @@
 use std::collections::HashSet;
 
 fn is_distinct(symbols: &[char]) -> bool {
-    let mut set: HashSet<char> = HashSet::new();
-    for item in symbols {
-        set.insert(*item);
-    }
-
+    let set: HashSet<char> = symbols.iter().copied().collect();
     set.len() == symbols.len()
 }
 

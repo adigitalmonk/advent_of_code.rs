@@ -11,12 +11,9 @@ enum Move {
 
 impl Move {
     fn for_win(symbol: char) -> Self {
-        match symbol {
-            'A' | 'X' => Self::Rock,
-            'B' | 'Y' => Self::Paper,
-            'C' | 'Z' => Self::Scissors,
-            _ => panic!("Invalid move input"),
-        }
+        symbol
+            .try_into()
+            .unwrap_or_else(|_| panic!("bad input {symbol}"))
     }
 
     fn for_outcome(opponent: &Self, outcome: char) -> Self {
@@ -29,8 +26,20 @@ impl Move {
     }
 }
 
+impl TryFrom<char> for Move {
+    type Error = String;
+    fn try_from(c: char) -> Result<Self, Self::Error> {
+        match c {
+            'A' | 'X' => Ok(Self::Rock),
+            'B' | 'Y' => Ok(Self::Paper),
+            'C' | 'Z' => Ok(Self::Scissors),
+            _ => Err(String::from("invalid")),
+        }
+    }
+}
+
 impl Game {
-    fn new(opponent: char, player: char) -> Self {
+    const fn new(opponent: char, player: char) -> Self {
         Self { opponent, player }
     }
 
@@ -47,21 +56,22 @@ impl Game {
         Self::score(&opponent, &player)
     }
 
-    fn score(opponent: &Move, player: &Move) -> u32 {
+    const fn score(opponent: &Move, player: &Move) -> u32 {
         let choice_score = Self::score_choice(player);
         let match_score = Self::score_match(opponent, player);
 
         choice_score + match_score
     }
 
-    fn score_choice(player: &Move) -> u32 {
+    const fn score_choice(player: &Move) -> u32 {
         match player {
             Move::Rock => 1,
             Move::Paper => 2,
             Move::Scissors => 3,
         }
     }
-    fn score_match(opponent: &Move, player: &Move) -> u32 {
+
+    const fn score_match(opponent: &Move, player: &Move) -> u32 {
         match (opponent, player) {
             (Move::Rock, Move::Rock)
             | (Move::Scissors, Move::Scissors)
@@ -78,29 +88,24 @@ impl Game {
 
 fn build_games(data: &[String]) -> Vec<Game> {
     data.iter().fold(Vec::new(), |mut acc, game_input| {
-        let game_raw: Vec<&str> = game_input.split(' ').collect();
-
-        let opponent = game_raw[0].chars().next().expect("wasn't a letter");
-        let player = game_raw[1].chars().next().expect("wasn't a letter");
-        let game = Game::new(opponent, player);
-        acc.push(game);
+        let mut chars = game_input.chars();
+        if let (Some(opponent), Some(' '), Some(player), None) =
+            (chars.next(), chars.next(), chars.next(), chars.next())
+        {
+            let game = Game::new(opponent, player);
+            acc.push(game);
+        }
 
         acc
     })
 }
 
 pub fn part1(data: &[String]) -> u32 {
-    build_games(data).iter().fold(0, |mut acc, game| {
-        acc += game.run_for_win();
-        acc
-    })
+    build_games(data).iter().map(Game::run_for_win).sum()
 }
 
 pub fn part2(data: &[String]) -> u32 {
-    build_games(data).iter().fold(0, |mut acc, game| {
-        acc += game.run_for_outcome();
-        acc
-    })
+    build_games(data).iter().map(Game::run_for_outcome).sum()
 }
 
 #[cfg(test)]
@@ -111,24 +116,24 @@ mod tests {
     #[test]
     fn test_part1_sample() {
         let sample_data = read_data("day2/sample.txt");
-        assert_eq!(part1(&sample_data), 15)
+        assert_eq!(part1(&sample_data), 15);
     }
 
     #[test]
     fn test_part1() {
         let data = read_data("day2/full.txt");
-        assert_eq!(part1(&data), 11150)
+        assert_eq!(part1(&data), 11150);
     }
 
     #[test]
     fn test_part2_sample() {
         let sample_data = read_data("day2/sample.txt");
-        assert_eq!(part2(&sample_data), 12)
+        assert_eq!(part2(&sample_data), 12);
     }
 
     #[test]
     fn test_part2() {
         let data = read_data("day2/full.txt");
-        assert_eq!(part2(&data), 8295)
+        assert_eq!(part2(&data), 8295);
     }
 }

@@ -6,18 +6,32 @@ struct Rucksack {
     right_pocket: HashSet<char>,
 }
 
+trait Prioritizable {
+    fn priority(self) -> u32;
+}
+
+impl Prioritizable for char {
+    fn priority(self) -> u32 {
+        let value = self as u32;
+        if (97..=122).contains(&value) {
+            value - 96
+        } else if (65..=90).contains(&value) {
+            value - 38
+        } else {
+            panic!("invalid priority input")
+        }
+    }
+}
+
 impl Rucksack {
     fn new(raw: &String) -> Self {
         let pack_length = raw.len();
         let (left_raw, right_raw) = raw.split_at(pack_length / 2);
-        let left_pocket = left_raw.chars().collect::<HashSet<char>>();
-        let right_pocket = right_raw.chars().collect::<HashSet<char>>();
-        let everything = raw.chars().collect::<HashSet<char>>();
 
         Self {
-            everything,
-            left_pocket,
-            right_pocket,
+            everything: raw.chars().collect(),
+            left_pocket: left_raw.chars().collect(),
+            right_pocket: right_raw.chars().collect(),
         }
     }
 
@@ -28,57 +42,37 @@ impl Rucksack {
             .next()
             .expect("invalid pocket contents");
 
-        get_priority(*badge)
+        (*badge).priority()
     }
 
     fn get_shared_badge_priority(sack_a: &Self, sack_b: &Self, sack_c: &Self) -> u32 {
-        let common_badge = sack_a
+        let shared_badge = sack_a
             .everything
             .iter()
             .filter(|k| sack_b.everything.contains(*k))
             .find(|k| sack_c.everything.contains(*k))
             .expect("invalid bag contents");
 
-        get_priority(*common_badge)
-    }
-}
-
-fn get_priority(symbol: char) -> u32 {
-    let value = symbol as u32;
-    if (97..=122).contains(&value) {
-        value - 96
-    } else if (65..=90).contains(&value) {
-        value - 38 // 65 - 27
-    } else {
-        panic!("invalid priority input")
+        (*shared_badge).priority()
     }
 }
 
 fn build_packs(data: &[String]) -> Vec<Rucksack> {
-    data.iter().fold(Vec::new(), |mut acc, pack_raw| {
-        let pack = Rucksack::new(pack_raw);
-        acc.push(pack);
-        acc
-    })
+    data.iter().map(Rucksack::new).collect()
 }
 
 pub fn part1(data: &[String]) -> u32 {
-    build_packs(data).iter().fold(0, |mut acc, sack| {
-        acc += sack.get_badge_priority();
-        acc
-    })
+    build_packs(data)
+        .iter()
+        .map(Rucksack::get_badge_priority)
+        .sum()
 }
 
 pub fn part2(data: &[String]) -> u32 {
-    build_packs(data).chunks(3).fold(0, |mut acc, sacks| {
-        let sack_a = &sacks[0];
-        let sack_b = &sacks[1];
-        let sack_c = &sacks[2];
-
-        acc += Rucksack::get_shared_badge_priority(sack_a, sack_b, sack_c);
-
-        acc
-    })
+    build_packs(data)
+        .chunks(3)
+        .map(|sacks| Rucksack::get_shared_badge_priority(&sacks[0], &sacks[1], &sacks[2]))
+        .sum()
 }
 
 #[cfg(test)]
@@ -88,10 +82,9 @@ mod tests {
 
     #[test]
     fn test_priority_values() {
-        assert_eq!(get_priority('a'), 1);
-        assert_eq!(get_priority('z'), 26);
-        assert_eq!(get_priority('A'), 27);
-        assert_eq!(get_priority('Z'), 52);
+        for (letter, expected) in [('a', 1), ('z', 26), ('A', 27), ('Z', 52)] {
+            assert_eq!(letter.priority(), expected);
+        }
     }
 
     #[test]
