@@ -1,12 +1,12 @@
-use std::ops::Range;
+use std::ops::RangeInclusive;
 
 struct Assignment {
-    first: Range<u32>,
-    second: Range<u32>,
+    first: RangeInclusive<u32>,
+    second: RangeInclusive<u32>,
 }
 
 impl Assignment {
-    const fn new(first: Range<u32>, second: Range<u32>) -> Self {
+    const fn new(first: RangeInclusive<u32>, second: RangeInclusive<u32>) -> Self {
         Self { first, second }
     }
     fn full_overlap(&self) -> bool {
@@ -19,22 +19,21 @@ impl Assignment {
 }
 
 trait CheckOverlap {
-    fn full_overlap(&self, other: &Range<u32>) -> bool;
-    fn has_overlap(&self, other: &Range<u32>) -> bool;
+    fn full_overlap(&self, other: &RangeInclusive<u32>) -> bool;
+    fn has_overlap(&self, other: &RangeInclusive<u32>) -> bool;
 }
 
-impl CheckOverlap for Range<u32> {
-    fn full_overlap(&self, other: &Range<u32>) -> bool {
-        (self.start <= other.start && self.end >= other.end)
-            || (other.start <= self.start && other.end >= self.end)
+impl CheckOverlap for RangeInclusive<u32> {
+    fn full_overlap(&self, other: &RangeInclusive<u32>) -> bool {
+        self.contains(other.start()) && self.contains(other.end())
+            || other.contains(self.start()) && other.contains(self.end())
     }
 
-    #[allow(clippy::suspicious_operation_groupings)]
-    fn has_overlap(&self, other: &Range<u32>) -> bool {
-        self.start >= other.start && self.start <= other.end
-            || self.end >= other.start && self.end <= other.end
-            || other.start >= self.start && other.start <= self.end
-            || other.end >= self.start && other.end <= self.end
+    fn has_overlap(&self, other: &RangeInclusive<u32>) -> bool {
+        self.contains(other.start())
+            || self.contains(other.end())
+            || other.contains(self.start())
+            || other.contains(self.end())
     }
 }
 
@@ -52,7 +51,7 @@ fn build_assignments(data: &[String]) -> Vec<Assignment> {
                 components.next(),
                 components.next(),
             ) {
-                Assignment::new(first..second, third..fourth)
+                Assignment::new(first..=second, third..=fourth)
             } else {
                 panic!("Bad input!")
             }
@@ -85,12 +84,17 @@ mod tests {
 
     #[test]
     fn test_full_overlap() {
-        let overlap_data = [(0..5, 1..2), (0..5, 2..5), (0..5, 0..3), (3..4, 2..5)];
+        let overlap_data = [
+            (0..=5, 1..=2),
+            (0..=5, 2..=5),
+            (0..=5, 0..=3),
+            (3..=4, 2..=5),
+        ];
         for (left, right) in overlap_data {
             assert!(Assignment::new(left, right).full_overlap());
         }
 
-        let no_overlap_data = [(1..6, 3..7), (2..7, 0..6)];
+        let no_overlap_data = [(1..=6, 3..=7), (2..=7, 0..=6)];
         for (left, right) in no_overlap_data {
             assert!(!Assignment::new(left, right).full_overlap());
         }
@@ -98,12 +102,17 @@ mod tests {
 
     #[test]
     fn test_any_overlap() {
-        let overlap_data = [(0..5, 4..6), (0..5, 2..3), (1..5, 0..1), (3..4, 2..5)];
+        let overlap_data = [
+            (0..=5, 4..=6),
+            (0..=5, 2..=3),
+            (1..=5, 0..=1),
+            (3..=4, 2..=5),
+        ];
         for (left, right) in overlap_data {
             assert!(Assignment::new(left, right).any_overlap());
         }
 
-        let no_overlap_data = [(1..4, 5..7), (2..7, 8..10)];
+        let no_overlap_data = [(1..=4, 5..=7), (2..=7, 8..=10)];
         for (left, right) in no_overlap_data {
             assert!(!Assignment::new(left, right).any_overlap());
         }
